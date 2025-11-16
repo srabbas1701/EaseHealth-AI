@@ -7,6 +7,8 @@ import { usePatientDetails } from '../../hooks/patient/usePatientDetails';
 import { usePatientVitals } from '../../hooks/patient/usePatientVitals';
 import { usePatientReports } from '../../hooks/patient/usePatientReports';
 import { supabase } from '../../utils/supabase';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useTranslations } from '../../translations';
 
 interface PatientTabContentProps {
   patientId: string | null;
@@ -15,6 +17,8 @@ interface PatientTabContentProps {
 }
 
 const PatientTabContent: React.FC<PatientTabContentProps> = memo(({ patientId, doctorId, onBack }) => {
+  const { language } = useLanguage();
+  const { t } = useTranslations(language);
   const { patient, isLoading: isLoadingPatient, error: patientError } = usePatientDetails(patientId);
   const { vitals, isLoading: isLoadingVitals } = usePatientVitals(patientId);
   const { reports, isLoading: isLoadingReports, uploadReport, deleteReport, markReviewed, lockReports, refetch: refetchReports } = usePatientReports(patientId);
@@ -26,7 +30,7 @@ const PatientTabContent: React.FC<PatientTabContentProps> = memo(({ patientId, d
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 border border-[#E8E8E8] dark:border-gray-600 text-center">
         <p className="text-gray-500 dark:text-gray-400 text-lg">
-          Select a patient from the appointments list to view their details
+          {t('patientTab.selectPatient')}
         </p>
       </div>
     );
@@ -52,14 +56,14 @@ const PatientTabContent: React.FC<PatientTabContentProps> = memo(({ patientId, d
     return (
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-12 border border-red-300 dark:border-red-700 text-center">
         <p className="text-red-600 dark:text-red-400 text-lg mb-4">
-          {patientError || 'Patient not found'}
+          {patientError || t('patientTab.patientNotFound')}
         </p>
         <button
           onClick={onBack}
           className="inline-flex items-center px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Appointments
+          {t('patientTab.backToAppointments')}
         </button>
       </div>
     );
@@ -73,7 +77,7 @@ const PatientTabContent: React.FC<PatientTabContentProps> = memo(({ patientId, d
         className="inline-flex items-center text-[#0075A2] dark:text-[#0EA5E9] hover:text-[#0A2647] dark:hover:text-gray-100 transition-colors font-medium"
       >
         <ArrowLeft className="w-5 h-5 mr-2" />
-        Back to Appointments
+        {t('patientTab.backToAppointments')}
       </button>
 
       {/* Patient Header with Vitals */}

@@ -1,11 +1,15 @@
 import React, { memo } from 'react';
 import { Clipboard } from 'lucide-react';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../translations';
 
 interface MedicalHistoryCardProps {
   medicalHistory?: string;
 }
 
 const MedicalHistoryCard: React.FC<MedicalHistoryCardProps> = memo(({ medicalHistory }) => {
+  const { language } = useLanguage();
+  const { t } = useTranslations(language);
   const hasHistory = medicalHistory && medicalHistory.trim() !== '' && medicalHistory.toLowerCase() !== 'none';
 
   return (
@@ -15,7 +19,7 @@ const MedicalHistoryCard: React.FC<MedicalHistoryCardProps> = memo(({ medicalHis
           <Clipboard className="w-5 h-5 text-blue-600 dark:text-blue-400" />
         </div>
         <h3 className="text-lg font-bold text-[#0A2647] dark:text-gray-100">
-          Medical History
+          {t('patientTab.medicalHistory')}
         </h3>
       </div>
 
@@ -26,7 +30,7 @@ const MedicalHistoryCard: React.FC<MedicalHistoryCardProps> = memo(({ medicalHis
           </p>
         ) : (
           <p className="text-sm text-gray-400 dark:text-gray-500 italic">
-            No medical history recorded
+            {t('patientTab.na')}
           </p>
         )}
       </div>

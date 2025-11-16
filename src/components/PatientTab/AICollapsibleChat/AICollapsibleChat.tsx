@@ -100,6 +100,7 @@ const AICollapsibleChat: React.FC<AICollapsibleChatProps> = ({
   const lastFinalIndexRef = useRef<number>(-1);
   const interimTextRef = useRef<string>('');
   const accumulatedFinalTextRef = useRef<string>('');
+  const previousLoadingRef = useRef<boolean>(false);
 
   const quickQuestions = [
     "What are the key abnormal findings?",
@@ -204,8 +205,13 @@ const AICollapsibleChat: React.FC<AICollapsibleChatProps> = ({
       // Only scroll the messages container, not the page
       const container = chatContentRef.current.querySelector('.messages-container') as HTMLElement;
       if (container && messagesEndRef.current) {
+        // Check if loading just finished (response received)
+        const justFinishedLoading = previousLoadingRef.current === true && isLoading === false;
+        
         const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 150;
-        if (isNearBottom) {
+        
+        // Auto-scroll if: 1) Just received AI response, OR 2) User is near bottom
+        if (justFinishedLoading || isNearBottom) {
           // Use scrollTop instead of scrollIntoView to prevent page jumping
           setTimeout(() => {
             container.scrollTop = container.scrollHeight;
@@ -213,6 +219,9 @@ const AICollapsibleChat: React.FC<AICollapsibleChatProps> = ({
         }
       }
     }
+    
+    // Update previous loading state
+    previousLoadingRef.current = isLoading;
   }, [messages, isLoading, isExpanded]);
 
   // Clear chat messages when reportIds change (new report selected)

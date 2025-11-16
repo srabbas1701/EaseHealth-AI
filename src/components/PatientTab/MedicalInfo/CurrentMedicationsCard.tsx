@@ -1,11 +1,15 @@
 import React, { memo } from 'react';
 import { Pill } from 'lucide-react';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../translations';
 
 interface CurrentMedicationsCardProps {
   currentMedications?: string;
 }
 
 const CurrentMedicationsCard: React.FC<CurrentMedicationsCardProps> = memo(({ currentMedications }) => {
+  const { language } = useLanguage();
+  const { t } = useTranslations(language);
   const hasMedications = currentMedications && currentMedications.trim() !== '' && currentMedications.toLowerCase() !== 'none';
 
   const parseMedications = (medications: string): string[] => {
@@ -24,7 +28,7 @@ const CurrentMedicationsCard: React.FC<CurrentMedicationsCardProps> = memo(({ cu
           <Pill className="w-5 h-5 text-green-600 dark:text-green-400" />
         </div>
         <h3 className="text-lg font-bold text-[#0A2647] dark:text-gray-100">
-          Current Medications
+          {t('patientTab.currentMedications')}
         </h3>
       </div>
 
@@ -43,7 +47,7 @@ const CurrentMedicationsCard: React.FC<CurrentMedicationsCardProps> = memo(({ cu
           </ul>
         ) : (
           <p className="text-sm text-gray-400 dark:text-gray-500 italic">
-            No current medications recorded
+            {t('patientTab.na')}
           </p>
         )}
       </div>

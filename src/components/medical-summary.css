@@ -144,6 +144,10 @@ section h4 {
   transition: background-color 0.2s ease;
 }
 
+.dark .results-table tbody tr:hover {
+  background: #4b5563;
+}
+
 .results-table tbody tr:last-child td {
   border-bottom: none;
 }
@@ -443,26 +447,189 @@ section h4 {
 
 /* Print Styles */
 @media print {
+  /* Compact container - remove padding and shadows */
   .ai-summary-container {
     box-shadow: none;
     padding: 0;
+    margin: 0;
+    max-width: 100%;
+    line-height: 1.4;
   }
   
+  /* Compact header section */
+  .summary-header {
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #2563eb;
+  }
+  
+  .summary-header h1 {
+    font-size: 22px;
+    margin: 0 0 4px 0;
+  }
+  
+  .generation-meta {
+    font-size: 11px;
+    margin: 0;
+  }
+  
+  /* Reduce section spacing significantly */
   section {
     page-break-inside: avoid;
     box-shadow: none;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 4px;
   }
   
+  /* Compact headings */
+  section h2 {
+    font-size: 16px;
+    margin: 0 0 8px 0;
+  }
+  
+  section h3 {
+    font-size: 14px;
+    margin: 8px 0 6px 0;
+  }
+  
+  section h4 {
+    font-size: 13px;
+    margin: 6px 0 4px 0;
+  }
+  
+  /* Compact cards */
+  .summary-card,
+  .report-card,
+  .analysis-content,
+  .recommendation-box {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+  
+  .summary-card p,
+  .report-card p {
+    margin: 4px 0;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  
+  /* Compact lists */
+  .alert-list li {
+    padding: 6px 6px 6px 10px;
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+  
+  .report-card ul,
+  .analysis-content ul,
+  .recommendation-box ul,
+  .missing-data ul {
+    margin: 4px 0;
+    padding-left: 16px;
+  }
+  
+  .report-card ul li,
+  .analysis-content li,
+  .recommendation-box li,
+  .missing-data li {
+    margin: 2px 0;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  
+  /* Compact table */
+  .results-table {
+    page-break-inside: avoid;
+    margin-top: 8px;
+    font-size: 11px;
+  }
+  
+  .results-table th {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  
+  .results-table td {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  
+  /* Remove hover effects in print */
+  .results-table tbody tr:hover {
+    background: transparent;
+  }
+  
+  /* Compact risk badges */
+  .risk-badge {
+    padding: 2px 8px;
+    font-size: 9px;
+    border: 1px solid #000;
+  }
+  
+  /* Compact notes */
+  .note {
+    font-size: 11px;
+    margin-top: 6px;
+    padding: 4px 6px;
+  }
+  
+  /* Compact disclaimer */
+  .disclaimer {
+    padding: 10px 12px;
+    margin-top: 12px;
+  }
+  
+  .disclaimer h3 {
+    font-size: 14px;
+    margin: 0 0 6px 0;
+  }
+  
+  .disclaimer p {
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 4px 0;
+  }
+  
+  /* Critical sections keep page integrity */
   .critical-findings {
     page-break-inside: avoid;
   }
   
-  .results-table {
-    page-break-inside: avoid;
+  /* Ensure color printing for risk indicators */
+  .high-risk {
+    color: #dc2626 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   
-  .risk-badge {
-    border: 1px solid #000;
+  .moderate-risk {
+    color: #ea580c !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .mild-risk {
+    color: #ca8a04 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .normal {
+    color: #16a34a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Preserve background colors for better clarity */
+  section {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .results-table thead {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }
 

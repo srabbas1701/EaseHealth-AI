@@ -1,6 +1,8 @@
 import React, { memo, useState, useRef } from 'react';
 import { Folder, Upload, FileText, Image, File, Trash2, Eye, X } from 'lucide-react';
 import type { PatientReport } from '../../../types/patient';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../translations';
 
 interface UploadedReportsCardProps {
   reports: PatientReport[];
@@ -25,6 +27,8 @@ const UploadedReportsCard: React.FC<UploadedReportsCardProps> = memo(({
   onLockReports,
   onSelectionChange,
 }) => {
+  const { language } = useLanguage();
+  const { t } = useTranslations(language);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [viewingReport, setViewingReport] = useState<PatientReport | null>(null);
@@ -130,14 +134,14 @@ const UploadedReportsCard: React.FC<UploadedReportsCardProps> = memo(({
               <Folder className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
             </div>
             <h3 className="text-lg font-bold text-[#0A2647] dark:text-gray-100">
-              Uploaded Reports & Documents
+              {t('patientTab.uploadedReports')}
             </h3>
           </div>
           <div className="flex items-center space-x-2">
             <button
               onClick={handleRefresh}
               disabled={isRefreshing}
-              title="Refresh reports"
+              title={t('patientTab.refresh')}
               className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:shadow-sm transition-colors flex items-center space-x-2 text-sm"
             >
               {isRefreshing ? (
@@ -145,7 +149,7 @@ const UploadedReportsCard: React.FC<UploadedReportsCardProps> = memo(({
               ) : (
                 <svg className="w-4 h-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 1 1-3-6.7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               )}
-              <span className="text-xs">Refresh</span>
+              <span className="text-xs">{t('patientTab.refresh')}</span>
             </button>
           </div>
         </div>
@@ -156,7 +160,7 @@ const UploadedReportsCard: React.FC<UploadedReportsCardProps> = memo(({
           className="w-full mb-4 px-4 py-3 bg-[#0075A2] dark:bg-[#0EA5E9] text-white rounded-lg font-medium hover:shadow-lg transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
         >
           <Upload className="w-5 h-5" />
-          <span>{isUploading ? 'Uploading...' : '+ Upload New'}</span>
+          <span>{t('patientTab.uploadNew')}</span>
         </button>
 
         <input

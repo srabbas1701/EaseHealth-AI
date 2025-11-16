@@ -3,6 +3,8 @@ import { User } from 'lucide-react';
 import type { Patient, PatientVitals } from '../../../types/patient';
 import AllergyIndicator from './AllergyIndicator';
 import PatientVitalsBar from './PatientVitalsBar';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../translations';
 
 interface PatientHeaderProps {
   patient: Patient;
@@ -11,6 +13,9 @@ interface PatientHeaderProps {
 }
 
 const PatientHeader: React.FC<PatientHeaderProps> = memo(({ patient, vitals, isLoadingVitals }) => {
+  const { language } = useLanguage();
+  const { t } = useTranslations(language);
+  
   const getInitials = (name: string) => {
     const words = name.trim().split(/\s+/);
     if (words.length === 1) return words[0].charAt(0).toUpperCase();
@@ -71,15 +76,15 @@ const PatientHeader: React.FC<PatientHeaderProps> = memo(({ patient, vitals, isL
             {/* Patient Metadata Row */}
             <div className="flex items-center space-x-6 text-gray-600 dark:text-gray-300">
               <div>
-                <span className="text-sm font-medium">Patient ID: </span>
+                <span className="text-sm font-medium">{t('patientTab.patientId')}: </span>
                 <span className="text-sm">{patient.id.substring(0, 8).toUpperCase()}</span>
               </div>
               {age && (
                 <>
                   <span className="text-gray-300 dark:text-gray-600">|</span>
                   <div>
-                    <span className="text-sm font-medium">Age: </span>
-                    <span className="text-sm">{age} years</span>
+                    <span className="text-sm font-medium">{t('patientTab.age')}: </span>
+                    <span className="text-sm">{age} {t('patientTab.years')}</span>
                   </div>
                 </>
               )}
@@ -87,7 +92,7 @@ const PatientHeader: React.FC<PatientHeaderProps> = memo(({ patient, vitals, isL
                 <>
                   <span className="text-gray-300 dark:text-gray-600">|</span>
                   <div>
-                    <span className="text-sm font-medium">Gender: </span>
+                    <span className="text-sm font-medium">{t('patientTab.gender')}: </span>
                     <span className="text-sm">{patient.gender}</span>
                   </div>
                 </>
@@ -96,7 +101,7 @@ const PatientHeader: React.FC<PatientHeaderProps> = memo(({ patient, vitals, isL
                 <>
                   <span className="text-gray-300 dark:text-gray-600">|</span>
                   <div>
-                    <span className="text-sm font-medium">Blood Type: </span>
+                    <span className="text-sm font-medium">{t('patientTab.bloodType')}: </span>
                     <span className="text-sm font-semibold text-red-600 dark:text-red-400">
                       {patient.blood_type}
                     </span>
@@ -108,12 +113,12 @@ const PatientHeader: React.FC<PatientHeaderProps> = memo(({ patient, vitals, isL
             {/* Contact Info */}
             <div className="flex items-center space-x-6 mt-3 text-sm text-gray-500 dark:text-gray-400">
               <div>
-                <span className="font-medium">Phone: </span>
+                <span className="font-medium">{t('patientTab.phone')}: </span>
                 <span>{patient.phone_number}</span>
               </div>
               <span className="text-gray-300 dark:text-gray-600">|</span>
               <div>
-                <span className="font-medium">Email: </span>
+                <span className="font-medium">{t('patientTab.email')}: </span>
                 <span>{patient.email}</span>
               </div>
             </div>
@@ -127,7 +132,7 @@ const PatientHeader: React.FC<PatientHeaderProps> = memo(({ patient, vitals, isL
               ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-700'
               : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600'
           }`}>
-            {patient.is_active ? 'Active' : 'Inactive'}
+            {patient.is_active ? t('patientTab.active') : t('patientTab.inactive')}
           </span>
         </div>
       </div>

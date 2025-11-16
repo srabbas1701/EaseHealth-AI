@@ -12,6 +12,8 @@ import {
   DoctorDocumentType,
   getDoctorSignedUrl
 } from '../utils/doctorFileUploadUtils';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslations } from '../translations';
 
 // Auth props interface
 interface AuthProps {
@@ -63,6 +65,8 @@ interface DoctorProfileData {
 
 function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenticated, isLoadingInitialAuth, isProfileLoading, handleLogout }: AuthProps) {
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const { t } = useTranslations(language);
   const [announcement, setAnnouncement] = useState('');
   const [doctorProfile, setDoctorProfile] = useState<DoctorProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -98,9 +102,9 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
   ];
 
   const consultationTypes = [
-    { id: 'In-Clinic', label: 'In-Clinic Consultation', icon: Building },
-    { id: 'Video', label: 'Video Teleconsultation', icon: Video },
-    { id: 'Audio', label: 'Audio Teleconsultation', icon: PhoneIcon }
+    { id: 'In-Clinic', label: t('doctorProfileUpdate.inClinicConsultation'), icon: Building },
+    { id: 'Video', label: t('doctorProfileUpdate.videoTeleconsultation'), icon: Video },
+    { id: 'Audio', label: t('doctorProfileUpdate.audioTeleconsultation'), icon: PhoneIcon }
   ];
 
   const servicesOptions = [
@@ -403,7 +407,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
           className="inline-flex items-center text-[#0075A2] dark:text-[#0EA5E9] hover:text-[#0A2647] dark:hover:text-gray-100 transition-colors mb-8"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Dashboard
+          {t('doctorProfileUpdate.backToDashboard')}
         </Link>
 
         {/* Page Header - Matching Dashboard Design */}
@@ -429,7 +433,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
                   {doctorProfile.specialty}{doctorProfile.super_specialization ? ` - ${doctorProfile.super_specialization}` : ''}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Update your professional information and practice details
+                  {t('doctorProfileUpdate.updateInfo')}
                 </p>
               </div>
             </div>
@@ -437,7 +441,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               to="/doctor-dashboard"
               className="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors text-sm font-medium"
             >
-              View Dashboard
+              {t('doctorProfileUpdate.viewDashboard')}
             </Link>
           </div>
         </div>
@@ -449,10 +453,10 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400 mr-3 flex-shrink-0" />
               <div>
                 <h3 className="text-sm font-semibold text-green-900 dark:text-green-100 mb-1">
-                  Profile Updated Successfully!
+                  {t('doctorProfileUpdate.profileUpdatedSuccess')}
                 </h3>
                 <p className="text-sm text-green-800 dark:text-green-200">
-                  Your profile information has been saved.
+                  {t('doctorProfileUpdate.profileSavedMessage')}
                 </p>
               </div>
             </div>
@@ -465,7 +469,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               <AlertCircle className="w-6 h-6 text-red-600 dark:text-red-400 mr-3 flex-shrink-0" />
               <div>
                 <h3 className="text-sm font-semibold text-red-900 dark:text-red-100 mb-1">
-                  Error Saving Profile
+                  {t('doctorProfileUpdate.errorSavingProfile')}
                 </h3>
                 <p className="text-sm text-red-800 dark:text-red-200">{saveError}</p>
               </div>
@@ -479,14 +483,14 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
             <div className="flex items-center mb-6">
               <Lock className="w-5 h-5 text-gray-400 mr-2" />
               <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100">
-                Registration Details (Non-Editable)
+                {t('doctorProfileUpdate.registrationDetails')}
               </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Full Name
+                  {t('doctorProfileUpdate.fullName')}
                 </label>
                 <div className="px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300">
                   {doctorProfile.full_name}
@@ -495,7 +499,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Email
+                  {t('doctorProfileUpdate.email')}
                 </label>
                 <div className="px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300">
                   {doctorProfile.email}
@@ -504,7 +508,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Medical Registration Number
+                  {t('doctorProfileUpdate.medicalRegNumber')}
                 </label>
                 <div className="px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300">
                   {doctorProfile.medical_registration_number || doctorProfile.license_number}
@@ -513,7 +517,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Primary Specialty
+                  {t('doctorProfileUpdate.primarySpecialty')}
                 </label>
                 <div className="px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300">
                   {doctorProfile.specialty}
@@ -523,7 +527,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               {doctorProfile.issuing_council && (
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Issuing Council
+                    {t('doctorProfileUpdate.issuingCouncil')}
                   </label>
                   <div className="px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300">
                     {doctorProfile.issuing_council}
@@ -535,7 +539,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
           {/* Profile Image Section */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-[#E8E8E8] dark:border-gray-600">
-            <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-6">Profile Picture</h2>
+            <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-6">{t('doctorProfileUpdate.profilePicture')}</h2>
 
             <div className="flex items-center space-x-6">
               <div className="w-32 h-32 bg-gradient-to-r from-[#0075A2] to-[#0A2647] rounded-2xl flex items-center justify-center text-white font-bold text-4xl overflow-hidden">
@@ -549,7 +553,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               <div className="flex-1">
                 <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-[#0075A2] text-white rounded-lg hover:bg-[#0A2647] transition-colors">
                   <Upload className="w-4 h-4 mr-2" />
-                  {uploadingFile === 'profile_image' ? 'Uploading...' : 'Change Picture'}
+                  {uploadingFile === 'profile_image' ? t('doctorProfileUpdate.uploading') : t('doctorProfileUpdate.changePicture')}
                   <input
                     type="file"
                     accept="image/*"
@@ -559,7 +563,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
                   />
                 </label>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  Max file size: 5MB. Supported formats: JPG, PNG, GIF
+                  {t('doctorProfileUpdate.maxFileSize')}
                 </p>
               </div>
             </div>
@@ -567,12 +571,12 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
           {/* Contact Information */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-[#E8E8E8] dark:border-gray-600">
-            <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-6">Contact Information</h2>
+            <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-6">{t('doctorProfileUpdate.contactInformation')}</h2>
 
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Phone Number *
+                  {t('doctorProfileUpdate.phoneNumber')} *
                 </label>
                 <input
                   type="tel"
@@ -585,14 +589,14 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Hospital/Clinic Affiliation
+                  {t('doctorProfileUpdate.hospitalClinicAffiliation')}
                 </label>
                 <input
                   type="text"
                   value={formData.hospital_affiliation}
                   onChange={(e) => handleInputChange('hospital_affiliation', e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#0075A2] dark:focus:ring-[#0EA5E9] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="Enter hospital or clinic name"
+                  placeholder={t('doctorProfileUpdate.enterHospitalName')}
                 />
               </div>
             </div>
@@ -600,51 +604,51 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
           {/* Professional Details */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-[#E8E8E8] dark:border-gray-600">
-            <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-6">Professional Details</h2>
+            <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-6">{t('doctorProfileUpdate.professionalDetails')}</h2>
 
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Super Specialization
+                  {t('doctorProfileUpdate.superSpecialization')}
                 </label>
                 <input
                   type="text"
                   value={formData.super_specialization}
                   onChange={(e) => handleInputChange('super_specialization', e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#0075A2] dark:focus:ring-[#0EA5E9] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="e.g., Interventional Cardiology"
+                  placeholder={t('doctorProfileUpdate.superSpecPlaceholder')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Professional Bio
+                  {t('doctorProfileUpdate.professionalBio')}
                 </label>
                 <textarea
                   value={formData.professional_bio}
                   onChange={(e) => handleInputChange('professional_bio', e.target.value)}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#0075A2] dark:focus:ring-[#0EA5E9] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="Write a brief professional biography..."
+                  placeholder={t('doctorProfileUpdate.professionalBioPlaceholder')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Short Bio (For Patients)
+                  {t('doctorProfileUpdate.shortBio')}
                 </label>
                 <textarea
                   value={formData.bio}
                   onChange={(e) => handleInputChange('bio', e.target.value)}
                   rows={3}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#0075A2] dark:focus:ring-[#0EA5E9] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="A short description visible to patients..."
+                  placeholder={t('doctorProfileUpdate.shortBioPlaceholder')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Languages Spoken
+                  {t('doctorProfileUpdate.languagesSpoken')}
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {languages.map((lang) => (
@@ -665,12 +669,12 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
           {/* Consultation Settings */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-[#E8E8E8] dark:border-gray-600">
-            <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-6">Consultation Settings</h2>
+            <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-6">{t('doctorProfileUpdate.consultationSettings')}</h2>
 
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Consultation Types Offered
+                  {t('doctorProfileUpdate.consultationTypesOffered')}
                 </label>
                 <div className="space-y-3">
                   {consultationTypes.map((type) => {
@@ -696,7 +700,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Consultation Fee (₹)
+                  {t('doctorProfileUpdate.consultationFee')}
                 </label>
                 <input
                   type="number"
@@ -704,13 +708,13 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
                   onChange={(e) => handleInputChange('consultation_fee', parseInt(e.target.value) || 0)}
                   min="0"
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#0075A2] dark:focus:ring-[#0EA5E9] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="Enter consultation fee"
+                  placeholder={t('doctorProfileUpdate.enterConsultationFee')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Services Offered
+                  {t('doctorProfileUpdate.servicesOffered')}
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {servicesOptions.map((service) => (
@@ -733,47 +737,47 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-[#E8E8E8] dark:border-gray-600">
             <div className="flex items-center mb-6">
               <CreditCard className="w-5 h-5 text-[#0075A2] dark:text-[#0EA5E9] mr-2" />
-              <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100">Bank Details</h2>
+              <h2 className="text-xl font-bold text-[#0A2647] dark:text-gray-100">{t('doctorProfileUpdate.bankDetails')}</h2>
             </div>
 
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Account Holder Name
+                  {t('doctorProfileUpdate.accountHolderName')}
                 </label>
                 <input
                   type="text"
                   value={formData.bank_account_holder_name}
                   onChange={(e) => handleInputChange('bank_account_holder_name', e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#0075A2] dark:focus:ring-[#0EA5E9] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                  placeholder="Enter account holder name"
+                  placeholder={t('doctorProfileUpdate.enterAccountHolderName')}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Bank Name
+                    {t('doctorProfileUpdate.bankName')}
                   </label>
                   <input
                     type="text"
                     value={formData.bank_name}
                     onChange={(e) => handleInputChange('bank_name', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#0075A2] dark:focus:ring-[#0EA5E9] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    placeholder="Enter bank name"
+                    placeholder={t('doctorProfileUpdate.enterBankName')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Branch Name
+                    {t('doctorProfileUpdate.branchName')}
                   </label>
                   <input
                     type="text"
                     value={formData.bank_branch}
                     onChange={(e) => handleInputChange('bank_branch', e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#0075A2] dark:focus:ring-[#0EA5E9] focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-                    placeholder="Enter branch name"
+                    placeholder={t('doctorProfileUpdate.enterBranchName')}
                   />
                 </div>
               </div>
@@ -781,7 +785,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               {doctorProfile.bank_account_number && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Account Number (Non-Editable)
+                    {t('doctorProfileUpdate.accountNumberNonEditable')}
                   </label>
                   <div className="px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300">
                     {doctorProfile.bank_account_number.replace(/.(?=.{4})/g, '*')}
@@ -792,7 +796,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               {doctorProfile.ifsc_code && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    IFSC Code (Non-Editable)
+                    {t('doctorProfileUpdate.ifscCodeNonEditable')}
                   </label>
                   <div className="px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300">
                     {doctorProfile.ifsc_code}
@@ -808,7 +812,7 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               to="/doctor-dashboard"
               className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
-              Cancel
+              {t('doctorProfileUpdate.cancel')}
             </Link>
             <button
               type="submit"
@@ -818,12 +822,12 @@ function DoctorProfileUpdatePage({ user, session, profile, userState, isAuthenti
               {isSaving ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                  <span>Saving...</span>
+                  <span>{t('doctorProfileUpdate.saving')}</span>
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4" />
-                  <span>Save Changes</span>
+                  <span>{t('doctorProfileUpdate.saveChanges')}</span>
                 </>
               )}
             </button>

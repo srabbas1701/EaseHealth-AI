@@ -8,6 +8,7 @@ import Navigation from '../components/Navigation';
 import { AccessibilityAnnouncer } from '../components/AccessibilityAnnouncer';
 import { useDarkMode } from '../hooks/useDarkMode';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslations } from '../translations';
 import { useRBAC } from '../hooks/useRBAC';
 import { supabase, getDoctorIdByUserId, createDoctorSchedulesForNext4Weeks, generateTimeSlotsForNext4Weeks } from '../utils/supabase';
 import PatientTabContent from '../components/PatientTab';
@@ -76,6 +77,7 @@ interface ScheduleForm {
 
 function DoctorDashboardPage({ user, session, profile, userState, isAuthenticated, isLoadingInitialAuth, isProfileLoading, handleLogout }: AuthProps) {
   const { language } = useLanguage();
+  const { t } = useTranslations(language);
   const { userRole, isLoading: roleLoading } = useRBAC();
   const [announcement, setAnnouncement] = useState('');
 
@@ -585,7 +587,7 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0075A2] mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading...</p>
+          <p className="text-gray-600 dark:text-gray-300">{t('auth.loading')}</p>
         </div>
       </div>
     );
@@ -602,7 +604,7 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
         <div className="flex items-center justify-center h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#0075A2] border-t-transparent mx-auto mb-4"></div>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Loading your dashboard...</p>
+            <p className="text-lg text-gray-600 dark:text-gray-300">{t('doctorDashboard.loadingDashboard')}</p>
           </div>
         </div>
       </div>
@@ -623,13 +625,13 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
         />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-[#0A2647] dark:text-gray-100 mb-4">Doctor Login Required</h1>
-            <p className="text-gray-600 dark:text-gray-300 mb-8">Please log in to access your doctor dashboard.</p>
+            <h1 className="text-3xl font-bold text-[#0A2647] dark:text-gray-100 mb-4">{t('doctorDashboard.loginRequired')}</h1>
+            <p className="text-gray-600 dark:text-gray-300 mb-8">{t('doctorDashboard.loginRequiredMessage')}</p>
             <Link
               to="/doctor-login"
               className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#0075A2] to-[#0A2647] text-white rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all"
             >
-              Go to Login
+              {t('doctorDashboard.goToLogin')}
             </Link>
           </div>
         </main>
@@ -644,7 +646,7 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
         <div className="flex items-center justify-center h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#0075A2] border-t-transparent mx-auto mb-4"></div>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Loading doctor information...</p>
+            <p className="text-lg text-gray-600 dark:text-gray-300">{t('doctorDashboard.loadingDoctorInfo')}</p>
           </div>
         </div>
       </div>
@@ -713,7 +715,7 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
           className="inline-flex items-center text-[#0075A2] dark:text-[#0EA5E9] hover:text-[#0A2647] dark:hover:text-gray-100 transition-colors mb-8 focus-ring"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Home
+          {t('auth.backToHome')}
         </Link>
 
         {/* Doctor Dashboard Header - Matching Patient Dashboard Pattern */}
@@ -736,17 +738,17 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                   {doctor?.full_name || 'Dr. Unknown'}
                 </h1>
                 <p className="text-gray-600 dark:text-gray-300 text-lg">
-                  <span className="font-medium">Specialty:</span> {doctor?.specialty || 'Not set'}
+                  <span className="font-medium">{t('doctorDashboard.speciality')}:</span> {doctor?.specialty || t('doctorDashboard.specialtyNotSet')}
                 </p>
                 {doctor?.super_specialization && (
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    <span className="font-medium">Super Specialization:</span> {doctor.super_specialization}
+                    <span className="font-medium">{t('doctorDashboard.superSpecialization')}:</span> {doctor.super_specialization}
                   </p>
                 )}
               </div>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-500 dark:text-gray-400">Last login</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('doctorDashboard.lastLogin')}</p>
               <p className="text-lg font-semibold text-[#0A2647] dark:text-gray-100">
                 {new Date().toLocaleDateString('en-GB')}
               </p>
@@ -759,7 +761,7 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                   className="bg-gradient-to-r from-[#0075A2] to-[#0A2647] text-white px-4 py-2 rounded-lg font-medium hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 text-sm flex items-center inline-flex"
                 >
                   <Edit3 className="w-4 h-4 mr-2" />
-                  Update Profile
+                  {t('doctorDashboard.updateProfile')}
                 </Link>
               </div>
             </div>
@@ -771,7 +773,7 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
           <div className="mb-6">
             <h3 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-2 flex items-center">
               <Activity className="w-5 h-5 mr-2 text-[#0075A2] dark:text-[#0EA5E9]" />
-              Today's Overview
+              {t('doctorDashboard.todayOverview')}
             </h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -782,11 +784,11 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Appointments</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('doctorDashboard.appointments')}</p>
                   <p className="text-2xl font-bold text-[#0A2647] dark:text-gray-100">
                     {isLoadingStats ? '...' : todayStats.appointments}
                   </p>
-                  <p className="text-xs text-green-600 dark:text-green-400 font-medium">Normal</p>
+                  <p className="text-xs text-green-600 dark:text-green-400 font-medium">{t('doctorDashboard.statusBadges.normal')}</p>
                 </div>
               </div>
             </div>
@@ -798,11 +800,11 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                   <UserCheck className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Waiting / Arrived</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('doctorDashboard.waitingArrived')}</p>
                   <p className="text-2xl font-bold text-[#0A2647] dark:text-gray-100">
                     {isLoadingStats ? '...' : todayStats.waitingArrived}
                   </p>
-                  <p className="text-xs text-green-600 dark:text-green-400 font-medium">Normal</p>
+                  <p className="text-xs text-green-600 dark:text-green-400 font-medium">{t('doctorDashboard.statusBadges.normal')}</p>
                 </div>
               </div>
             </div>
@@ -814,11 +816,11 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                   <UserX className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Cancelled</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('doctorDashboard.cancelled')}</p>
                   <p className="text-2xl font-bold text-[#0A2647] dark:text-gray-100">
                     {isLoadingStats ? '...' : todayStats.cancelled}
                   </p>
-                  <p className="text-xs text-green-600 dark:text-green-400 font-medium">Normal</p>
+                  <p className="text-xs text-green-600 dark:text-green-400 font-medium">{t('doctorDashboard.statusBadges.normal')}</p>
                 </div>
               </div>
             </div>
@@ -830,11 +832,11 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">New Patients</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('doctorDashboard.newPatients')}</p>
                   <p className="text-2xl font-bold text-[#0A2647] dark:text-gray-100">
                     {isLoadingStats ? '...' : todayStats.newPatients}
                   </p>
-                  <p className="text-xs text-green-600 dark:text-green-400 font-medium">Normal</p>
+                  <p className="text-xs text-green-600 dark:text-green-400 font-medium">{t('doctorDashboard.statusBadges.normal')}</p>
                 </div>
               </div>
             </div>
@@ -847,10 +849,10 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
             <div>
               <h3 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 flex items-center">
                 <Calendar className="w-5 h-5 mr-2 text-[#0075A2] dark:text-[#0EA5E9]" />
-                Appointments Summary
+                {t('doctorDashboard.appointmentsSummary')}
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 ml-7">
-                Showing appointments for{' '}
+                {t('doctorDashboard.showingAppointmentsFor')}{' '}
                 <span className="font-semibold text-[#0075A2] dark:text-[#0EA5E9]">
                   {new Date(selectedDate).toLocaleDateString('en-US', {
                     weekday: 'long',
@@ -883,16 +885,16 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
               <thead className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Name
+                    {t('doctorDashboard.patientName')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Time
+                    {t('doctorDashboard.time')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Queue #
+                    {t('doctorDashboard.queueNumber')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Status
+                    {t('doctorDashboard.status')}
                   </th>
                 </tr>
               </thead>
@@ -902,14 +904,14 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                     <td colSpan={4} className="px-6 py-8 text-center">
                       <div className="flex items-center justify-center">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#0075A2] dark:border-[#0EA5E9] mr-3"></div>
-                        <span className="text-gray-600 dark:text-gray-300">Loading appointments...</span>
+                        <span className="text-gray-600 dark:text-gray-300">{t('doctorDashboard.loadingAppointments')}</span>
                       </div>
                     </td>
                   </tr>
                 ) : filteredAppointments.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                      No appointments found for {new Date(selectedDate).toLocaleDateString()}
+                      {t('doctorDashboard.noAppointmentsFound')} {new Date(selectedDate).toLocaleDateString()}
                     </td>
                   </tr>
                 ) : (
@@ -938,10 +940,10 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                           </div>
                           <div>
                             <div className="text-sm font-medium text-[#0A2647] dark:text-gray-100">
-                              {appointment.patient_name || 'Unknown Patient'}
+                              {appointment.patient_name || t('doctorDashboard.unknownPatient')}
                             </div>
                             <div className="text-sm text-gray-500 dark:text-gray-400">
-                              {appointment.patient_phone || 'No phone'}
+                              {appointment.patient_phone || t('doctorDashboard.noPhone')}
                             </div>
                           </div>
                         </div>
@@ -969,10 +971,10 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-[#E8E8E8] dark:border-gray-600 mb-8">
           <div className="flex items-center space-x-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
             {[
-              { id: 'overview', label: 'Overview', icon: Calendar },
-              { id: 'maintain-schedule', label: 'Schedule Management', icon: Clock },
-              { id: 'patients', label: 'Patient', icon: User },
-              { id: 'reports', label: 'Reports', icon: FileText }
+              { id: 'overview', label: t('doctorDashboard.tabs.overview'), icon: Calendar },
+              { id: 'maintain-schedule', label: t('doctorDashboard.tabs.maintainSchedule'), icon: Clock },
+              { id: 'patients', label: t('doctorDashboard.tabs.patients'), icon: User },
+              { id: 'reports', label: t('doctorDashboard.tabs.reports'), icon: FileText }
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -980,7 +982,7 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
                   key={tab.id}
                   onClick={() => {
                     setActiveTab(tab.id as any);
-                    setAnnouncement(`Switched to ${tab.label} tab`);
+                    setAnnouncement(`${t('doctorDashboard.switchedToTab')} ${tab.label}`);
                   }}
                   className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-md font-medium transition-all ${activeTab === tab.id
                     ? 'bg-white dark:bg-gray-600 text-[#0075A2] dark:text-[#0EA5E9] shadow-sm'
@@ -999,12 +1001,10 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
         {activeTab === 'overview' && (
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-[#E8E8E8] dark:border-gray-600">
-              <h3 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-4">Overview: Daily Summary</h3>
+              <h3 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-4">{t('doctorDashboard.dailySummary')}</h3>
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                 <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                  Daily clinical summary and notes — empty state hint. This area will be populated with your daily clinical summary,
-                  important notes, and key observations from today's consultations. You can expand this section to add more detailed
-                  clinical notes and observations.
+                  {t('doctorDashboard.dailySummaryDescription')}
                 </p>
               </div>
             </div>
@@ -1014,9 +1014,9 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
         {activeTab === 'maintain-schedule' && (
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-[#E8E8E8] dark:border-gray-600">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold text-[#0A2647] dark:text-gray-100">Schedule Management</h2>
+              <h2 className="text-2xl font-bold text-[#0A2647] dark:text-gray-100">{t('doctorDashboard.scheduleManagement')}</h2>
               <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
-                Manage your availability for the next 4 weeks (Sunday to Saturday)
+                {t('doctorDashboard.scheduleManagementSubtitle')}
               </p>
             </div>
 
@@ -1035,13 +1035,13 @@ function DoctorDashboardPage({ user, session, profile, userState, isAuthenticate
         {activeTab === 'reports' && (
           <div className="space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-[#E8E8E8] dark:border-gray-600">
-              <h3 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-4">Reports & Analytics</h3>
+              <h3 className="text-xl font-bold text-[#0A2647] dark:text-gray-100 mb-4">{t('doctorDashboard.reportsAnalytics')}</h3>
               <p className="text-gray-600 dark:text-gray-300 mb-6">
-                Generate and view various reports for your practice analytics.
+                {t('doctorDashboard.reportsDescription')}
               </p>
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Reports and analytics features will be implemented here.
+                  {t('doctorDashboard.reportsPlaceholder')}
                 </p>
               </div>
             </div>

@@ -1,6 +1,8 @@
 import React, { memo } from 'react';
 import { Activity, Heart, Thermometer, Weight, Gauge } from 'lucide-react';
 import type { PatientVitals } from '../../../types/patient';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../translations';
 
 interface PatientVitalsBarProps {
   vitals: PatientVitals | null;
@@ -8,6 +10,9 @@ interface PatientVitalsBarProps {
 }
 
 const PatientVitalsBar: React.FC<PatientVitalsBarProps> = memo(({ vitals, isLoading }) => {
+  const { language } = useLanguage();
+  const { t } = useTranslations(language);
+  
   if (isLoading) {
     return (
       <div className="border-t border-gray-200 dark:border-gray-600 pt-6 mt-6">
@@ -26,7 +31,7 @@ const PatientVitalsBar: React.FC<PatientVitalsBarProps> = memo(({ vitals, isLoad
   const vitalItems = [
     {
       icon: Activity,
-      label: 'Blood Pressure',
+      label: t('patientTab.bloodPressure'),
       value: vitals?.blood_pressure || '--/--',
       unit: 'mmHg',
       color: 'text-blue-600 dark:text-blue-400',
@@ -34,7 +39,7 @@ const PatientVitalsBar: React.FC<PatientVitalsBarProps> = memo(({ vitals, isLoad
     },
     {
       icon: Heart,
-      label: 'Heart Rate',
+      label: t('patientTab.heartRate'),
       value: vitals?.heart_rate || '--',
       unit: 'bpm',
       color: 'text-red-600 dark:text-red-400',
@@ -42,7 +47,7 @@ const PatientVitalsBar: React.FC<PatientVitalsBarProps> = memo(({ vitals, isLoad
     },
     {
       icon: Thermometer,
-      label: 'Temperature',
+      label: t('patientTab.temperature'),
       value: vitals?.temperature ? vitals.temperature.toFixed(1) : '--',
       unit: '°F',
       color: 'text-orange-600 dark:text-orange-400',
@@ -50,7 +55,7 @@ const PatientVitalsBar: React.FC<PatientVitalsBarProps> = memo(({ vitals, isLoad
     },
     {
       icon: Weight,
-      label: 'Weight',
+      label: t('patientTab.weight'),
       value: vitals?.weight ? vitals.weight.toFixed(1) : '--',
       unit: 'kg',
       color: 'text-green-600 dark:text-green-400',
@@ -58,7 +63,7 @@ const PatientVitalsBar: React.FC<PatientVitalsBarProps> = memo(({ vitals, isLoad
     },
     {
       icon: Gauge,
-      label: 'BMI',
+      label: t('patientTab.bmi'),
       value: vitals?.bmi ? vitals.bmi.toFixed(1) : '--',
       unit: '',
       color: 'text-purple-600 dark:text-purple-400',
@@ -96,7 +101,7 @@ const PatientVitalsBar: React.FC<PatientVitalsBarProps> = memo(({ vitals, isLoad
 
       {vitals && vitals.recorded_date && (
         <div className="mt-4 text-xs text-gray-500 dark:text-gray-400 text-right">
-          Last recorded: {new Date(vitals.recorded_date).toLocaleDateString('en-US', {
+          {t('patientTab.lastRecorded')}: {new Date(vitals.recorded_date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
