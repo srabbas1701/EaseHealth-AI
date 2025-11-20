@@ -142,7 +142,7 @@ export const en = {
   hero: {
     title: "Your Health",
     titleHighlight: "Simplified",
-    subtitle: "From booking your appointment to reminders and real-time queue updates — EaseHealth AI makes doctor visits effortless with intelligent automation.",
+    subtitle: "Seamless scheduling and real-time updates for you. Intelligent AI tools that help doctors diagnose faster. EaseHealth AI transforms healthcare for both sides of the stethoscope.",
     getStarted: "Get Started",
     learnMore: "Learn More",
     ctaDescription: "Start your healthcare journey with EaseHealth AI. Choose your service or learn more about our features."

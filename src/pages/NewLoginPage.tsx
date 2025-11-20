@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { supabase } from '../utils/supabase';
+import { supabase, createAppointment, getPatientProfile, createPatientProfile } from '../utils/supabase';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, AlertCircle, CheckCircle, User, Phone } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -9,6 +9,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useRBAC } from '../hooks/useRBAC';
 import { runManualCleanup } from '../utils/manualCleanup';
 import { Clock } from 'lucide-react';
+import QueueTokenModal from '../components/QueueTokenModal';
 
 interface NewLoginPageProps {
     user: any;
@@ -30,6 +31,9 @@ const NewLoginPage: React.FC<NewLoginPageProps> = ({ isAuthenticated, handleLogo
     // Get entry point and redirect info from URL
     const searchParams = new URLSearchParams(location.search);
     const redirectUrl = searchParams.get('redirect') || '/';
+    
+    // Get booking details from location state (for appointment booking flow)
+    const bookingDetails = location.state?.bookingDetails || null;
     // Derive required role from redirect target (doctor/patient/admin dashboards)
     const requiredRole = useMemo(() => {
         if (!redirectUrl) return null;
@@ -71,11 +75,20 @@ const NewLoginPage: React.FC<NewLoginPageProps> = ({ isAuthenticated, handleLogo
     const [success, setSuccess] = useState('');
     const [countdown, setCountdown] = useState(0);
     const [showRecoveryOptions, setShowRecoveryOptions] = useState(false);
+    
+    // Appointment booking states
+    const [showQueueTokenModal, setShowQueueTokenModal] = useState(false);
+    const [queueToken, setQueueToken] = useState('');
+    const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
+    const [isProcessingBooking, setIsProcessingBooking] = useState(false);
 
     // Auto-redirect if already authenticated and role is loaded
     useEffect(() => {
         // Don't redirect if there's an active error message (user needs to see it)
         if (error && requiredRole) return;
+
+        // Don't redirect if we're processing a booking (need to show modal first)
+        if (isProcessingBooking || showQueueTokenModal) return;
 
         if (isAuthenticated && userRole && !roleLoading) {
             const targetUrl = redirectUrl !== '/' ? redirectUrl : getDefaultDashboard(userRole);
@@ -97,7 +110,7 @@ const NewLoginPage: React.FC<NewLoginPageProps> = ({ isAuthenticated, handleLogo
             console.log('🔄 User already authenticated, redirecting to:', targetUrl);
             navigate(targetUrl, { replace: true });
         }
-    }, [isAuthenticated, userRole, roleLoading, redirectUrl, navigate, getDefaultDashboard, requiredRole, error]);
+    }, [isAuthenticated, userRole, roleLoading, redirectUrl, navigate, getDefaultDashboard, requiredRole, error, isProcessingBooking, showQueueTokenModal]);
 
     // Note: Error state persists intentionally until user navigates to a different link
 
@@ -196,6 +209,91 @@ const NewLoginPage: React.FC<NewLoginPageProps> = ({ isAuthenticated, handleLogo
                         setError(t('login.unableToValidateRole'));
                         return;
                     }
+                }
+
+                // If coming from appointment booking, create appointment immediately
+                if (bookingDetails && data.user) {
+                    setIsProcessingBooking(true);
+                    try {
+                        console.log('📋 Creating appointment for user after login...');
+
+                        // Ensure user has a patient profile
+                        let patientProfile = await getPatientProfile(data.user.id);
+
+                        if (!patientProfile) {
+                            console.log('📝 Creating patient profile for user');
+                            patientProfile = await createPatientProfile(data.user.id, {
+                                full_name: data.user.user_metadata?.full_name || data.user.email?.split('@')[0] || 'Patient',
+                                email: data.user.email || '',
+                                phone_number: data.user.user_metadata?.phone || '000-000-0000',
+                                is_active: true
+                            });
+                            console.log('✅ Patient profile created:', patientProfile);
+                        }
+
+                        // Convert time to proper format (IST timezone)
+                        const timeParts = bookingDetails.selectedTime.split(':');
+                        const hour = parseInt(timeParts[0]);
+                        const minute = parseInt(timeParts[1].split(' ')[0]);
+                        const isPM = bookingDetails.selectedTime.includes('PM');
+
+                        let hour24 = hour;
+                        if (isPM && hour !== 12) hour24 += 12;
+                        if (!isPM && hour === 12) hour24 = 0;
+
+                        const timeString = `${hour24.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
+                        // Use IST timezone for date string
+                        const dateString = `${bookingDetails.selectedDate.getFullYear()}-${String(bookingDetails.selectedDate.getMonth() + 1).padStart(2, '0')}-${String(bookingDetails.selectedDate.getDate()).padStart(2, '0')}`;
+
+                        console.log('🔍 Booking appointment with:', {
+                            doctorId: bookingDetails.selectedDoctor.id,
+                            patientId: patientProfile.id,
+                            date: dateString,
+                            time: timeString
+                        });
+
+                        // Use the proper createAppointment function
+                        const appointment = await createAppointment(
+                            bookingDetails.selectedDoctor.id,
+                            patientProfile.id,
+                            dateString,
+                            timeString,
+                            30, // Default duration
+                            'Appointment booked through EaseHealth platform'
+                        );
+
+                        if (!appointment || !appointment.id) {
+                            throw new Error('Failed to create appointment');
+                        }
+
+                        console.log('✅ Appointment created successfully:', appointment);
+
+                        // Set queue token and appointment details for modal
+                        setQueueToken(appointment.queue_token || 'QT-2024-0001');
+                        setAppointmentDetails({
+                            doctorName: bookingDetails.selectedDoctor.full_name,
+                            date: bookingDetails.selectedDate.toLocaleDateString(),
+                            time: bookingDetails.selectedTime,
+                            specialty: bookingDetails.selectedSpecialty?.name,
+                            action: 'booked'
+                        });
+
+                        // Show queue token modal
+                        setShowQueueTokenModal(true);
+                        setIsProcessingBooking(false);
+
+                    } catch (error: any) {
+                        console.error('❌ Error creating appointment:', error);
+                        console.error('❌ Error details:', {
+                            message: error.message,
+                            code: error.code,
+                            details: error.details,
+                            hint: error.hint
+                        });
+                        setIsProcessingBooking(false);
+                        setError(`Failed to create appointment: ${error.message || 'Unknown error occurred'}`);
+                    }
+                    return; // Exit early, don't redirect - stay on login page with modal
                 }
 
                 console.log('🔄 Login successful, user will be redirected automatically');
@@ -330,6 +428,7 @@ const NewLoginPage: React.FC<NewLoginPageProps> = ({ isAuthenticated, handleLogo
     }
 
     return (
+        <>
         <div className="min-h-screen bg-[#F6F6F6] dark:bg-gray-900 text-[#0A2647] dark:text-gray-100 transition-colors duration-300">
             <Navigation
                 user={null}
@@ -653,6 +752,16 @@ const NewLoginPage: React.FC<NewLoginPageProps> = ({ isAuthenticated, handleLogo
                 </div>
             </div>
         </div>
+
+        {/* Queue Token Modal for appointment booking */}
+        <QueueTokenModal
+            isOpen={showQueueTokenModal}
+            onClose={() => setShowQueueTokenModal(false)}
+            onRedirect={() => navigate('/patient-dashboard')}
+            queueToken={queueToken}
+            appointmentDetails={appointmentDetails}
+        />
+        </>
     );
 };
 

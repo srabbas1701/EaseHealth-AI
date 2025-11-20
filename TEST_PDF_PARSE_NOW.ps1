@@ -51,3 +51,6 @@ if ($global -and $local -and ($result -match "OK") -and $n8nRunning) {
 }
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`n" -ForegroundColor Cyan
 
+
+
+

@@ -16,3 +16,6 @@ COMMENT ON COLUMN patients.telegram_user_id IS 'Telegram user ID for sending app
 
 
 
+
+
+

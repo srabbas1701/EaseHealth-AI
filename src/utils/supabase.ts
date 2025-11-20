@@ -1026,6 +1026,11 @@ export const getAvailableTimeSlots = async (doctorId: string, date: string) => {
       return []
     }
 
+    console.log(`📋 Fetched ${data?.length || 0} available slots for doctor ${doctorId} on ${date}`);
+    if (data && data.length > 0) {
+      console.log('📋 Available slot times:', data.map(s => `${s.start_time} (${s.status})`).join(', '));
+    }
+
     return data || []
   } catch (error) {
     console.error('Network error:', error)
@@ -1123,6 +1128,13 @@ export const createAppointment = async (
   console.log('🔍 Availability check result:', availabilityCheck);
 
   if (!availabilityCheck.available) {
+    console.error('❌ SLOT NOT AVAILABLE:', {
+      doctorId,
+      date,
+      startTime,
+      error: availabilityCheck.error,
+      currentStatus: availabilityCheck.currentStatus
+    });
     throw new Error(availabilityCheck.error || 'Time slot is not available');
   }
 
@@ -1292,6 +1304,12 @@ export const cancelAppointment = async (appointmentId: string) => {
   // Update the time slot if found
   let updatedTimeSlot = null;
   if (timeSlotToUpdate) {
+    console.log('🔄 Updating time slot to available:', {
+      slotId: timeSlotToUpdate.id,
+      currentStatus: timeSlotToUpdate.status,
+      appointmentId: timeSlotToUpdate.appointment_id
+    });
+    
     const { data, error } = await supabase
       .from('time_slots')
       .update({
@@ -1308,7 +1326,11 @@ export const cancelAppointment = async (appointmentId: string) => {
       // Don't throw - continue to cancel appointment even if slot update fails
     } else {
       updatedTimeSlot = data;
-      console.log('✅ Time slot marked as available');
+      console.log('✅ Time slot marked as available:', {
+        slotId: data.id,
+        newStatus: data.status,
+        appointmentId: data.appointment_id
+      });
     }
   } else {
     console.warn('⚠️ No matching time slot found - will only update appointment status');

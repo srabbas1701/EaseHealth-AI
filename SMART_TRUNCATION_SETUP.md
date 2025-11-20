@@ -319,3 +319,6 @@ If something goes wrong, simply:
 **File:** `n8n-extract-pdf-SMART-TRUNCATE.js`  
 **Status:** Ready for production ✅
 
+
+
+

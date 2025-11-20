@@ -85,3 +85,6 @@ Your original image from 8 days ago had pdf-parse installed correctly during the
 
 **Go test it - it WILL work now because we're using your original working setup!** 🚀
 
+
+
+
