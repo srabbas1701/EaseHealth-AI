@@ -12,6 +12,24 @@ Transform chaotic clinic operations into streamlined digital workflows with AI-p
 
 ---
 
+## 📦 **Repositories**
+
+This project is maintained across two repositories for different purposes:
+
+- **🚀 Main Development (You're here!):** [github.com/srabbas1701/EaseHealth-AI](https://github.com/srabbas1701/EaseHealth-AI)
+  - Active development branch
+  - Latest features and improvements
+  - Full development history and archives
+  - Continuous integration of new capabilities
+
+- **📌 v1.0 Stable Release:** [github.com/srabbas1701/EaseHealth-AIv1.0](https://github.com/srabbas1701/EaseHealth-AIv1.0)
+  - Capstone MVP submission (AIGF Fellowship)
+  - Production-ready, clean codebase
+  - Frozen at v1.0 milestone
+  - Perfect for demos and showcase
+
+---
+
 ## 🎯 **What is EaseHealth?**
 
 EaseHealth eliminates manual healthcare administration by automating appointments, digitizing medical records, and using AI (Claude 3.7 Sonnet) to instantly summarize complex medical reports. It solves the time-consuming workflow problems faced by Indian clinics while ensuring DPDP-compliant security.
