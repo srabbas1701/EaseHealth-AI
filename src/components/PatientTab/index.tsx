@@ -166,7 +166,9 @@ const PatientTabContent: React.FC<PatientTabContentProps> = memo(({ patientId, d
 
             // Use env var if set, otherwise fallback to vite proxy path (works in dev)
             // In production, VITE_N8N_AI_SUMMARY_WEBHOOK should be set to the actual n8n webhook URL
-            const webhookUrl = (import.meta as any).env?.VITE_N8N_AI_SUMMARY_WEBHOOK || '/api/n8n/ai-summary';
+            const webhookUrl = import.meta.env.VITE_N8N_AI_SUMMARY_WEBHOOK || '/api/n8n/ai-summary';
+            console.log('🔍 DEBUG: Webhook URL being used:', webhookUrl);
+            console.log('🔍 DEBUG: Env var value:', import.meta.env.VITE_N8N_AI_SUMMARY_WEBHOOK);
             const payload = {
               reports: validReports,
               patient_id: patientId,
@@ -192,30 +194,30 @@ const PatientTabContent: React.FC<PatientTabContentProps> = memo(({ patientId, d
             const ct = resp.headers.get('content-type') || '';
             if (!ct.includes('application/json')) {
               const t = await resp.text();
-              throw new Error(`n8n non-JSON response: ${t?.slice(0,500)}`);
+              throw new Error(`n8n non-JSON response: ${t?.slice(0, 500)}`);
             }
             let result = await resp.json();
-            
+
             // Handle array response from n8n (when workflow returns array)
             if (Array.isArray(result) && result.length > 0) {
               result = result[0];
             }
-            
+
             // Accept both 'summary' (OpenAI) and 'output' (Anthropic) field names
             const responseContent = result?.summary || result?.output;
-            
+
             // Extract the extracted_text field for chat functionality
             const extractedText = result?.extracted_text || '';
-            
+
             if (!responseContent) {
               throw new Error('Invalid AI response');
             }
-            
+
             // Log for verification
             if (extractedText) {
               console.log('📄 Extracted text length:', extractedText.length);
             }
-            
+
             // Return both summary and extractedText as an object
             return { summary: responseContent as string, extractedText };
           } catch (err) {

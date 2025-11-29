@@ -334,12 +334,55 @@ const AICollapsibleChat: React.FC<AICollapsibleChatProps> = ({
 
       const data = await response.json();
 
+      // n8n returns the formattedAnswer as a stringified JSON
+      // We need to parse it to extract the answer text and confidence
+      let answerText = data.answer || 'I received your question but couldn\'t generate a response.';
+      let confidenceLevel = data.confidence || 'medium';
+
+      // Try to parse if it looks like JSON
+      if (typeof answerText === 'string' && answerText.trim().startsWith('{')) {
+        try {
+          // Parse the JSON string - this automatically converts \n to actual newlines
+          const parsed = JSON.parse(answerText);
+          
+          if (parsed && typeof parsed === 'object' && parsed.answer) {
+            // Successfully parsed - extract values
+            answerText = parsed.answer;
+            confidenceLevel = parsed.confidence || confidenceLevel;
+          }
+        } catch (e) {
+          // Parsing failed - JSON string has escaped characters
+          // Try manual extraction as fallback
+          try {
+            // Remove outer quotes and unescape
+            let cleaned = answerText;
+            
+            // Extract answer field value (everything between "answer": and ", "confidence")
+            const answerMatch = cleaned.match(/"answer":\s*"([\s\S]*?)",\s*"confidence"/);
+            if (answerMatch && answerMatch[1]) {
+              answerText = answerMatch[1]
+                .replace(/\\n/g, '\n')
+                .replace(/\\"/g, '"')
+                .replace(/\\\\/g, '\\');
+            }
+            
+            // Extract confidence
+            const confidenceMatch = cleaned.match(/"confidence":\s*"([^"]+)"/);
+            if (confidenceMatch && confidenceMatch[1]) {
+              confidenceLevel = confidenceMatch[1];
+            }
+          } catch (extractError) {
+            console.error('Failed to extract answer:', extractError);
+          }
+        }
+      }
+
       const aiMessage: Message = {
         id: generateId(),
         role: 'assistant',
-        content: data.answer || 'I received your question but couldn\'t generate a response.',
+        content: answerText,
         timestamp: new Date(),
-        confidence: (data.confidence as 'high' | 'medium' | 'low') || 'medium'
+        confidence: (confidenceLevel as 'high' | 'medium' | 'low') || 'medium'
       };
       setMessages(prev => [...prev, aiMessage]);
 
@@ -513,9 +556,10 @@ const AICollapsibleChat: React.FC<AICollapsibleChatProps> = ({
                     <div 
                       className="message-text ai-chat-message" 
                       dangerouslySetInnerHTML={{ 
-                        __html: msg.content.includes('&lt;') 
+                        __html: (msg.content.includes('&lt;') 
                           ? msg.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
-                          : msg.content 
+                          : msg.content
+                        ).replace(/\n/g, '<br>')
                       }} 
                     />
                   ) : (

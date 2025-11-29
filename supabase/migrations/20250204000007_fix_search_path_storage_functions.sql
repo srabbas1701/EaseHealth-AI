@@ -143,3 +143,4 @@ GRANT EXECUTE ON FUNCTION upload_doctor_document(uuid, text, text, bytea, text) 
 
 
 
+

@@ -424,3 +424,4 @@ COMMENT ON POLICY "Doctors can view vitals of their patients" ON public.patient_
 
 
 
+

@@ -9,6 +9,9 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     proxy: {
+      // ========================================
+      // LOCAL n8n PROXY - ACTIVE (For Demo)
+      // ========================================
       '/api/n8n/ai-summary': {
         target: 'http://localhost:5678',
         changeOrigin: true,
@@ -22,35 +25,15 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/n8n\/report-chat/, '/webhook/report-chat'),
       },
       '/api/n8n/appointment-notification': {
-        // Try to extract target from env var, fallback to localhost
-        target: (() => {
-          const webhookUrl = process.env.VITE_N8N_APPOINTMENT_WEBHOOK;
-          if (webhookUrl && webhookUrl.startsWith('http')) {
-            try {
-              const url = new URL(webhookUrl);
-              return `${url.protocol}//${url.host}`;
-            } catch {
-              return 'http://localhost:5678';
-            }
-          }
-          return 'http://localhost:5678';
-        })(),
+        target: 'http://localhost:5678',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => {
-          // Extract path from env var if available
-          const webhookUrl = process.env.VITE_N8N_APPOINTMENT_WEBHOOK;
-          if (webhookUrl && webhookUrl.includes('/webhook/')) {
-            try {
-              const url = new URL(webhookUrl);
-              return url.pathname;
-            } catch {
-              return '/webhook/appointment-notification';
-            }
-          }
-          return '/webhook/appointment-notification';
-        },
+        rewrite: (path) => path.replace(/^\/api\/n8n\/appointment-notification/, '/webhook/appointment-notification'),
       },
+
+      // ========================================
+      // CLOUD n8n - NO PROXY NEEDED (Commented for demo)
+      // ========================================
     },
   },
 });
